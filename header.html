@@ -44,7 +44,10 @@ of it requires the prior written permission of Adobe.
 <% end %>   
             
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
-    <script type="text/javascript" src="$theRoot/resources/galleria-1.5.7.min.js"></script>
+  <script type="text/javascript" src="$theRoot/resources/galleria-1.5.7.min.js"></script>
+  
+  <!-- Google fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Great+Vibes|Tangerine" rel="stylesheet">
     
 	<style>
 <%
@@ -52,9 +55,21 @@ of it requires the prior written permission of Adobe.
 %>
 		#container { width: <%= model.appearance.container.width %>%; margin-left: <%= margin %>%; padding: 1em; }
 		.footer { margin-top: 25px; font-size: 0.8em; width: 100%; text-align: right; }
-    </style>       
+
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 6em;
+      text-align: center;
+    }
+
+    h2 {
+      font-family: 'Tangerine', cursive;
+      font-size: 3em;
+      text-align: center;
+    }
+  </style>       
     
-    <link rel="stylesheet" href="./content/custom.css" />   
+  <link rel="stylesheet" href="./content/custom.css" />   
     
     <script>
 	$(document).ready(function() {
