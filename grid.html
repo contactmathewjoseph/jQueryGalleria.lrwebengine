@@ -1,0 +1,57 @@
+<%
+--[[
+
+grid.html
+This file displays a thumbnail grid of the images with dimensions specified in the galleryInfo.lrweb file.
+The Pagination tagsets have been used to assist with navigation through the photos.
+--------------------------------------------------------------------------------
+
+Joune Software
+ Copyright 2012 Arjun Panday
+
+ADOBE SYSTEMS INCORPORATED
+ Copyright 2008 Adobe Systems Incorporated
+ All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file in accordance
+with the terms of the Adobe license agreement accompanying it. If you have received
+this file from a source other than Adobe, then your use, modification, or distribution
+of it requires the prior written permission of Adobe.
+
+]]
+%>
+<%
+--[[ Define some variables to make locating other resources easier.]]
+     
+     local mySize = "thumb"
+     local others = "content"
+     local theRoot = "."
+     
+%>
+
+<% --[[ Include the page header]] %>
+<%@ include file="header.html" %>
+
+<script>
+    var photos = [
+<lr:ThumbnailGrid>
+	<lr:GridPhotoCell>
+<%
+--[[ Define all image parameters]]
+     local myTitle = string.gsub(image.metadata.title, "\'", "\\\'") 
+     local myDescr = string.gsub(image.metadata.description, "\'", "\\\'")
+%>
+     { thumb: '$others/bin/images/thumb/<%= image.exportFilename %>.jpg', 
+       image: '$others/bin/images/large/<%= image.exportFilename %>.jpg', 
+       title: '<%= myTitle %>',
+       description: '<%= myDescr %>',
+     },
+  </lr:GridPhotoCell>
+</lr:ThumbnailGrid>
+    ];  
+</script>
+
+  <div id="galleria"></div>
+
+<% --[[ Include the page footer]] %>
+<%@ include file="footer.html" %>

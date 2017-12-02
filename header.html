@@ -1,0 +1,93 @@
+<%
+--[[
+
+header.html
+This file begins the html file.
+By separating the pages, the header can be used with the large.html and grid.html pages
+--------------------------------------------------------------------------------
+
+DIMIN Software
+ Copyright 2009 Dima Fedorov
+ 
+ADOBE SYSTEMS INCORPORATED
+ Copyright 2008 Adobe Systems Incorporated
+ All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file in accordance
+with the terms of the Adobe license agreement accompanying it. If you have received
+this file from a source other than Adobe, then your use, modification, or distribution
+of it requires the prior written permission of Adobe.
+
+]]
+%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>  
+  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="generator" content="Galleria plugin for Adobe Lightroom" >
+    <title>$model.metadata.siteTitle.value</title>   
+    
+<% if mode == 'preview' then %>
+  <style>
+    #liveUpdateSiteTitle {}
+    #sitetitle {}
+  </style> 
+
+  <script type="text/javascript">
+  <!--
+  	window.AgMode = "$mode";
+  	window.AgOnLoad = function() {}
+  -->
+  </script>    
+  <script type="text/javascript" src="$theRoot/resources/live_update.js"></script> 
+<% end %>   
+            
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+    <script type="text/javascript" src="$theRoot/resources/galleria-1.2.7.min.js"></script>
+    
+	<style>
+<%
+	local margin = (100 - model.appearance.container.width) / 2
+%>
+		#container { width: <%= model.appearance.container.width %>%; margin-left: <%= margin %>%; padding: 1em; }
+		.footer { margin-top: 25px; font-size: 0.8em; width: 100%; text-align: right; }
+    </style>       
+    
+    <link rel="stylesheet" href="./content/custom.css" />   
+    
+    <script>
+	$(document).ready(function() {
+    	// Initialize Galleria
+		Galleria.loadTheme('$theRoot/resources/themes/classic/galleria.classic.min.js');
+	    Galleria.run('#galleria',{
+			dataSource: photos,
+			height: <%= model.appearance.galleria.height %>
+		});
+		Galleria.ready(function(options) {
+			this.attachKeyboard({
+			    left: this.prev, // applies the native prev() function
+			    right: this.next,
+			    up: this.prev,
+			    down: this.next
+			});
+		});
+	});
+    </script>
+    
+</head>
+
+<body>
+
+	<div id="container">
+  <div class="header">
+<% if mode == 'preview' then %>  
+      <h1 onclick="clickTarget( this, 'metadata.siteTitle.value' );" id="metadata.siteTitle.value">$model.metadata.siteTitle.value</h1>
+      <h2 onclick="clickTarget( this, 'metadata.collectionTitle.value' );" id="metadata.collectionTitle.value">$model.metadata.collectionTitle.value</h2>
+      <p onclick="clickTarget( this, 'metadata.collectionDescription.value' );" id="metadata.collectionDescription.value">$model.metadata.collectionDescription.value</p>
+<% else %> 
+      <h1>$model.metadata.siteTitle.value</h1>
+      <h2>$model.metadata.collectionTitle.value</h2>
+      <p>$model.metadata.collectionDescription.value</p>
+<% end %>  
+  </div>

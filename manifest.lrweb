@@ -1,0 +1,52 @@
+--[[
+
+manifest.lrweb
+Sample web template
+
+Lightroom Web Gallery manifest.  This file maps various template files to actual
+files to be produced for your website.
+	
+--------------------------------------------------------------------------------
+
+Joune Software
+ Copyright 2012 Arjun Panday
+ 
+ADOBE SYSTEMS INCORPORATED
+ Copyright 2008 Adobe Systems Incorporated
+ All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file in accordance
+with the terms of the Adobe license agreement accompanying it. If you have received
+this file from a source other than Adobe, then your use, modification, or distribution
+of it requires the prior written permission of Adobe.
+
+]]
+
+importTags( "lr", "com.adobe.lightroom.default" )
+
+AddGridPages {
+	template="grid.html",
+	rows=1,
+	columns=10000,
+}
+
+AddPhotoPages {
+	variant="_large",
+	destination="content",
+}
+
+AddResources {
+	source='resources',
+	destination='resources',
+}
+
+IdentityPlate {
+	destination='content/logo.png',
+	enabledBinding = [[appearance.logo.display]],
+}
+
+-- Include custom stylesheet
+AddCustomCSS{
+	filename="content/custom.css",
+}
+

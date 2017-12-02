@@ -1,0 +1,71 @@
+<%
+--[[
+
+footer.html
+This file adds closure to the html file.
+By separating the pages the footer can be used with the large.html and grid.html pages
+--------------------------------------------------------------------------------
+
+ADOBE SYSTEMS INCORPORATED
+ Copyright 2008 Adobe Systems Incorporated
+ All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file in accordance
+with the terms of the Adobe license agreement accompanying it. If you have received
+this file from a source other than Adobe, then your use, modification, or distribution
+of it requires the prior written permission of Adobe.
+
+]]
+%>
+
+
+	<%
+	local function fixUrlIfRelative( url )
+  		url = tostring( url ) or ""
+  		if string.find( url, "[a-z]+:" ) then
+    		-- this url starts with something like http: or mailto:, so leave it alone
+  		else
+    		-- this url is probably relative, so we need to tack on theRoot to the beginning
+    		-- of it, so no matter where the page were currently viewing is placed in the 
+    		-- output hierarchy, this link will still point to the same page
+    		url = theRoot .. "/" .. url;
+  		end
+  		return url
+	end
+ 	%>
+
+<div class="footer">
+
+	<%
+	--[[ Include the identity plate during preview to enable quick live update ]]
+    local includeIdentityPlate = false or model.appearance.logo.display
+    if includeIdentityPlate then
+      local url = fixUrlIfRelative( model.metadata.homePage.value )
+    %>
+    <div class="logo">
+        <a href="$url">
+        	<img width="<%= getIdentityPlateSize().width %>" height="<%= getIdentityPlateSize().height %>" src="$others/logo.png" alt="Logo">
+        </a>
+    </div>
+    <%
+        end --[[ End conditionalize identity plate ]]
+    %>
+
+  <p class="author">Photography by: 
+	<% --[[ Contact Info ]] %>
+<% if mode ~= 'preview' then
+		local url = fixUrlIfRelative( model.metadata.contactInfo.link ) %>
+		<a href="<%= url %>"> <span>
+<% else %>
+		<span onclick="clickTarget( this, 'metadata.contactInfo.value' );" style="text-decoration: underline;" id="metadata.contactInfo.value">
+<% end %>
+<%= model.metadata.contactInfo.value %></span>
+<% if mode ~= 'preview' then %>
+		</a></p>
+<% end %>
+
+    <p class="credits">Gallery created with Love, <a href="http://jquery.com">jQuery</a>, <a href="http://galleria.io">Galleria.io</a> and <a href="http://www.adobe.com/fr/products/photoshop-lightroom.html">Adobe Lightroom</a></p>
+  </div>
+	</div>
+</body>
+</html>

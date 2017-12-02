@@ -1,0 +1,395 @@
+--[[
+
+galleryInfo.lrweb
+This file specifies the development environment within Lightroom.
+For this sample we have defined sizes for large and thumbnail images which will be used in the large.html
+and grid.html pages when displaying the selected photos.
+
+The views table creates the panel entries available within the Lightroom UI.  For this sample the
+user can dynamically edit the site title of the website before it is published.
+
+--------------------------------------------------------------------------------
+
+Joune Software
+ Copyright 2012 Arjun Panday
+ 
+ADOBE SYSTEMS INCORPORATED
+ Copyright 2008 Adobe Systems Incorporated
+ All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file in accordance
+with the terms of the Adobe license agreement accompanying it. If you have received
+this file from a source other than Adobe, then your use, modification, or distribution
+of it requires the prior written permission of Adobe.
+
+]]
+
+local useMultiBind = true
+return {
+	LrSdkVersion = 3.0,
+	LrSdkMinimumVersion = 2.0, -- minimum SDK version required by this plugin
+
+	title = "Galleria.io plugin",
+	id = "com.joune.lightroom.galleria", -- unique id for this plug-in
+	galleryType = "lua", -- lua or flash
+	
+	model = {
+	
+		-- The following metadata are located in the header of the sample and can be edited by the user using the Site Info panel.
+		["metadata.siteTitle.value"] = LOC "$$$/Templates/HTML/Defaults/SiteTitle=jQuery Galleria.io",
+		["metadata.collectionTitle.value"] = LOC "$$$/Templates/HTML/Panel/Labels/CollectionTitle=My Photographs",
+		["metadata.collectionDescription.value"] = LOC "$$$/Templates/HTML/Panel/Labels/CollectionDescription=Web Photo Gallery created by Adobe Lightroom", 		
+				
+		["appearance.siteTitle.cssID"] = "#liveUpdateSiteTitle",
+		["appearance.sitetitle.cssID"] = "#sitetitle",				
+				
+				
+		-- Contact details that are currently displayed in the footer section of the sample.  The 'link' is the valid email address and 'value' the text representation of the link
+		["metadata.contactInfo.link"] = {
+			value = LOC "$$$/Templates/HTML/Defaults/ContactLink=mailto:user@domain",
+			metadata = { [ "ag:dataType" ] = "webLink" },
+		},
+		["metadata.contactInfo.value"] = LOC "$$$/Templates/HTML/Defaults/properties/ContactInfo=Contact Name",				
+
+		-- The name of the homepage file when published
+		["metadata.homePage.value"] = {
+			value = "index.html",
+			metadata = { [ "ag:dataType" ] = "webLink" },
+		},
+
+
+		["nonCSS.tracking"] = false,
+		["photoSizes.tracking"] = false,
+		
+		["nonCSS.imageBase"] = "content",	-- when translated to html, the images will be in a root folder 'content'
+
+		["lightroomApplication.identityPlateExport"] = "(main)", -- optional entry displaying identity plate
+		["lightroomApplication.jpegQuality"] = 85, -- quality of images when published
+		["lightroomApplication.sizeBeingViewed"] = "thumb",
+		["lightroomApplication.useWatermark"] = true,
+		
+		["perImageSetting.description"] = {
+			enabled = true,
+			value = "{{com.adobe.caption}}",
+		},
+		["perImageSetting.title"] = {
+			enabled = true,
+			value = "{{com.adobe.title}}",
+		},		
+		
+		[ "photoSizes.large.width" ] = 650,
+		[ "photoSizes.large.height" ] = 650,
+		[ "photoSizes.thumb.width" ] = 100,
+		[ "photoSizes.thumb.height" ] = 100,
+		
+		["appearance.container.width"] = 75, -- width of main container
+		["appearance.container.background-color"] = "#808080", -- bg of main container
+		["appearance.container.cssID"] = "#container", -- css ID of main container
+		
+		["appearance.galleria.height"] = 550, -- height of Galleria viewport
+		["appearance.galleria.cssID"] = "#galleria", -- css ID of Galleria viewport
+
+		["appearance.galleria-container.background-color"] = "#000000", -- height of Galleria viewport
+		["appearance.galleria-container.cssID"] = ".galleria-container", -- css ID of Galleria container
+
+		["appearance.logo.cssID"] = ".logo",
+		["appearance.logo.display"] = false,	
+
+		["appearance.body.cssID"] = "body",		
+		["appearance.body.color"] = "#000000",
+		["appearance.body.background-color"] = "#808080",
+
+		["appearance.heading2.cssID"] = "h2",		
+		["appearance.heading2.color"] = "#333333",
+
+		["appearance.footerA.cssID"] = ".footer a",		
+		["appearance.footerA.color"] = "#333333",
+
+		["appearance.heading3.cssID"] = "h3",		
+		["appearance.heading3.color"] = "#595959",
+
+		["appearance.footer.cssID"] = ".footer",		
+		["appearance.footer.color"] = "#595959",
+				
+	},
+	
+	iconicPreview = {
+		flashMovie = "iconic_preview/iconic_preview.swf",
+		flashvars = function()
+			local iconicData = {
+			}
+			return iconicData
+		end,
+	},
+	
+	properties = {
+		perImage = {
+			{
+				id = "title",
+				title = LOC "$$$/WPG/HTML/CSS/properties/ImageTitle=Title",
+			},
+			{
+				id = "description",
+				title = LOC "$$$/WPG/HTML/CSS/properties/ImageCaption=Caption",
+			},
+		},
+	},	
+	
+	views = function( controller, f )
+		local LrView = import "LrView"
+		local bind = LrView.bind
+		local multibind = f.multibind
+		
+		return {
+		
+			-- this panel will appear in the Lightroom UI to enable a user to dynamically change the site title from the application without modifying any of this code.
+			labels = f:panel_content {
+				bindToObject = controller,
+				
+				f:subdivided_sections {
+					-- Site Info panel for user to change site title, collection and description entries.
+					f:labeled_text_input  {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/SiteTitle=Site Title",
+						value = bind "metadata.siteTitle.value",
+					},
+					f:labeled_text_input  {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/CollectionTitle=Collection Title",
+						value = bind "metadata.collectionTitle.value",
+					},
+					f:labeled_text_input {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/CollectionDescription=Collection Description",
+						value = bind "metadata.collectionDescription.value",
+					},
+				},
+				
+				f:subdivided_sections {
+					-- update the contact details displayed in the footer of the page
+					f:labeled_text_input  {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/ContactInfo=Contact Info",
+						value = bind "metadata.contactInfo.value",
+					},
+					f:labeled_text_input  {
+						title = LOC "$$$/Templates/HTML/link=Web or Mail Link",
+						value = bind "metadata.contactInfo.link",
+						wraps = false,
+					},
+				}, 
+				
+				f:subdivided_sections {
+					f:header_section {
+						f:checkbox_row {
+							title = LOC "$$$/Templates/HTML/Panel/Labels/IdentityPlate=Identity Plate",
+							value = bind "appearance.logo.display",
+						},
+					},
+					f:identity_plate {
+						value = bind "lightroomApplication.identityPlateExport",
+						enabled = bind "appearance.logo.display",
+					},
+					f:labeled_text_input {
+						title = LOC "$$$/Templates/HTML/IdentityPlate/Link=Web or Mail Link",
+						value = bind "metadata.homePage.value",
+						wraps = false,
+					},
+				}, 
+								
+				
+			},
+
+
+			colorPalette = f:panel_content {
+				bindToObject = controller,
+				f:subdivided_sections {
+					-- colour adjustments of the centre panel
+					f:header_section_label {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/Main=Main Section",
+					},
+					f:color_content_column {
+						f:label_and_color_row {
+							color = bind "appearance.body.color",
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Colors/TextColor=Text",
+						},
+					},
+					f:color_content_column {
+						f:label_and_color_row {
+							color = bind "appearance.body.background-color",
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Colors/BackgroundColor=Background",
+						},
+					},
+					f:color_content_column {
+						f:label_and_color_row {
+							color = bind "appearance.container.background-color",
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Colors/ContainerColor=Container",
+						},
+					},
+					f:color_content_column {
+						f:label_and_color_row {
+							color = bind "appearance.galleria-container.background-color",
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Colors/GalleriaBackground=Galleria",
+						},
+					},
+					
+					f:color_content_column {
+						f:label_and_color_row {
+							color = multibind {
+								"appearance.heading2.color",
+								"appearance.footerA.color",
+							},
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Colors/Heading2=Heading2",
+						},
+					},
+					f:color_content_column {
+						f:label_and_color_row {
+							color = multibind {
+								"appearance.heading3.color",
+								"appearance.footer.color",
+							},
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Colors/Heading3=Heading3",
+						},
+					},					
+				},
+				
+			},
+
+		
+			appearanceConfiguration = f:panel_content {
+				bindToObject = controller,
+				
+
+				f:subdivided_sections {
+					f:header_section_label {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/Container=Container",
+					},
+					f:slider_content_column {
+						f:slider_row {
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/ContainerWidth=Width",
+							value = bind "appearance.container.width",
+							unit = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/ContainerWidthUnit=%",
+							max = 100,
+							min = 10,
+							width_in_digits = 3,
+							precision = 0,
+						},
+					},	
+				},
+				
+				f:subdivided_sections {
+					f:header_section_label {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/Galleria=Galleria",
+					},
+					f:slider_content_column {
+						f:slider_row {
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/GalleriaHeight=Height",
+							value = bind "appearance.galleria.height",
+							unit = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/GalleriaHeightUnit=px",
+							max = 900,
+							min = 100,
+							width_in_digits = 3,
+							precision = 0,
+						},
+					},					
+				},
+
+				f:subdivided_sections {
+					-- adjust thumb image sizes
+					f:header_section_label {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/Thumbnails=Thumbnails",
+					},
+					f:slider_content_column {
+						f:slider_row {
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/ThumbPreview=Size",
+							value = useMultiBind and multibind {
+								"photoSizes.thumb.width",
+								"photoSizes.thumb.height",
+								"appearance.liveUpdateImageSize.maxSize",
+							}
+							or bind "photoSizes.thumb.width",
+							tracking = bind "nonCSS.tracking",
+							unit = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/ThumbSizeUnit=px",
+							max = 640,
+							min = 25,
+							width_in_digits = 3,
+							precision = 0,
+						},
+					},
+				},
+				
+				f:subdivided_sections {
+					-- adjust large image sizes
+					f:header_section_label {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/Images=Images",
+					},
+					f:slider_content_column {
+						f:slider_row {
+							title = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/LargePreview=Size",
+							value = useMultiBind and multibind {
+								"photoSizes.large.width",
+								"photoSizes.large.height",
+								"appearance.liveUpdateImageSize.maxSize",
+							}
+							or bind "photoSizes.large.width",
+							tracking = bind "nonCSS.tracking",
+							unit = LOC "$$$/Templates/HTML/Panel/Labels/Appearance/ImageSizeUnit=px",
+							max = 2500,
+							min = 100,
+							width_in_digits = 4,
+							precision = 0,
+						},
+					},
+				},
+			},
+				
+				
+			outputSettings = f:panel_content {
+				bindToObject = controller,
+				f:subdivided_sections {
+					f:slider_content_column {
+						f:metadataModeControl {
+							value = useMultiBind and multibind {
+								"photoSizes.thumb.metadataExportMode",
+								"photoSizes.large.metadataExportMode",
+							}
+							or bind "photoSizes.thumb.metadataExportMode",
+						},
+					},
+					f:slider_content_column {
+						f:checkbox_row {
+							title = LOC "$$$/Templates/HTML/Panel/Checkbox/UseWatermark=Add Copyright Watermark",
+							value = bind "lightroomApplication.useWatermark",
+							indent_with_sliders = true,
+						},
+					},
+				},
+				f:subdivided_sections {
+					f:header_section_label {
+						title = LOC "$$$/Templates/HTML/Panel/Labels/ImageHandling=Large Images",
+					},
+					f:slider_content_column {
+						f:slider_row {
+							title = LOC "$$$/Templates/HTML/Panel/Labels/MaximumImageSizeLabel/JPEGQualityLabel=Quality",
+							value = bind "lightroomApplication.jpegQuality",
+							tracking = bind "lightroomApplication.jpegQuality.tracking",
+							tracking_value = "qualityTracking",
+							unit = "",
+							max = 100,
+							min = 0,
+							width_in_digits = 4,
+							precision = 0,
+						},
+					},
+				},
+			}, 						
+			
+		}
+	end,
+	
+	galleryOptions = { 
+		thumbnail = "resources/diminsoft.jpg",
+			-- SPAM, are we exporting this file when we publish?
+		galleryName = LOC "$$$/WPG/Templates/HTML/Title=jQuery Galleria.io",
+		aboutBoxFile = "about.html",
+		galleryVersion = "1.1",
+		supportsLiveUpdate = false,
+	}	
+	
+}
